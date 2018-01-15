@@ -1,7 +1,7 @@
 import cv2
 import numpy as np
 
-img = cv2.imread("G:\\pic\\a0.jpg", 0)
+img = cv2.imread("G:\\PIC\\dashu\\2.jpg", 0)
 
 img = cv2.GaussianBlur(img, (3, 3), 0)
 edges = cv2.Canny(img, 50, 150, apertureSize=3)

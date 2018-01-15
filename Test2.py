@@ -6,7 +6,7 @@ import math
 from argparse import ArgumentParser
 FILENAME = "1.150000001.png";
 
-HOUGH_VOTE = 5
+HOUGH_VOTE = 150
 GRAY_THRESH  = 150
 
 #srcImgOrg : the source image
@@ -45,7 +45,7 @@ def calcRotAngle(srcImgOrg,srcImgGray):
     magMat = cv.threshold(magMat,GRAY_THRESH,255,cv.THRESH_BINARY)[1].astype(np.uint8)
     lines = cv.HoughLines(magMat,1,np.pi/180, HOUGH_VOTE);
     #cv.imshow("mag_binary", magMat);
-    #lineImg = np.ones(magMat.shape,dtype=np.uint8)
+    lineImg = np.ones(magMat.shape,dtype=np.uint8)
     angle = 0
     if len(lines) != 0:
         for line in lines[0]:
@@ -56,15 +56,15 @@ def calcRotAngle(srcImgOrg,srcImgGray):
                 print('Vertical line , rho : %f , theta : %f'%(rho,theta))
                 pt1 = (int(rho/np.cos(theta)),0)
                 pt2 = (int((rho-magMat.shape[0]*np.sin(theta))/np.cos(theta)),magMat.shape[0])
-                #cv.line( lineImg, pt1, pt2, (255))
+                cv.line( lineImg, pt1, pt2, (255))
                 angle = theta
             else:
                 print('Horiz line , rho : %f , theta : %f'%(rho,theta))
                 pt1 = (0,int(rho/np.sin(theta)))
                 pt2 = (magMat.shape[1], int((rho-magMat.shape[1]*np.cos(theta))/np.sin(theta)))
-                #cv.line(lineImg, pt1, pt2, (255), 1)
+                cv.line(lineImg, pt1, pt2, (255), 1)
                 angle = theta + np.pi / 2
-        #cv.imshow('lineImg',lineImg)
+
         #Find the proper angel
         if angle > (np.pi / 2):
             angle = angle - np.pi
@@ -83,6 +83,8 @@ def calcRotAngle(srcImgOrg,srcImgGray):
         else:
             angleD = angle * 180 / np.pi
         print('angleD : %f' % angleD)
+
+    cv.imshow('lineImg', lineImg)
     return angleD
 
 def rotImage(srcImgOrg,angleD,path):
@@ -103,19 +105,20 @@ def rotImage(srcImgOrg,angleD,path):
 
 def handleImage(fileName):
     srcImgOrg = cv.imread(fileName)
+   # ret, srcImgGray = cv.threshold(srcImgOrg, 127, 255, cv.THRESH_BINARY)
     srcImgGray = cv.imread(fileName,cv.IMREAD_GRAYSCALE).astype(np.float32);
     angle = calcRotAngle(srcImgOrg,srcImgGray)
     if angle > 0:
-        rotImage(srcImgOrg,angle,"G:\\pic\\g__.jpg")
+        rotImage(srcImgOrg,angle*10,"G:\\pic\\dashu\\b0_.jpg")
 
 def main():
     #p = ArgumentParser(usage='it is usage tip', description='this is a usage tip')
     #p.add_argument('--file', default="./", help='input file name')
     #args = p.parse_args()
     #print args.file
-    srcImgOrg = cv.imread("G:\\pic\\a.jpg")
-    rotImage(srcImgOrg, 20, "G:\\pic\\ab.jpg")
-    handleImage("G:\\pic\\ab.jpg")
+    #srcImgOrg = cv.imread("G:\\pic\\0.jpg")
+    #rotImage(srcImgOrg, 20, "G:\\pic\\ab.jpg")
+    handleImage("G:\\pic\\dashu\\b0.jpg")
 
 if __name__ == '__main__':
     main()
